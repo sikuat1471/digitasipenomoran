@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digitasi Penomoran</title>
+    <title>Digitasi Penomoran - Cloud Sync</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +42,7 @@
         .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
         .btn-secondary { background: transparent; color: var(--fg); font-weight: 500; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; font-size: 0.75rem; }
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(51, 65, 85, 0.05); }
+        /* Pagination Buttons */
         .page-btn { background: transparent; color: var(--fg); font-weight: 500; padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; font-size: 0.7rem; }
         .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: rgba(51, 65, 85, 0.05); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -54,6 +55,11 @@
         .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.25rem; color: var(--sidebar-text); text-decoration: none; transition: all 0.15s ease; font-size: 0.8rem; border-left: 3px solid transparent; }
         .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #ffffff; }
         .nav-item.active { background: var(--sidebar-active-bg); color: var(--sidebar-active); border-left-color: #fff; font-weight: 500; }
+        
+        /* Sidebar Footer Style */
+        .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; text-align: center; }
+        .sidebar-footer p { font-size: 0.65rem; color: #64748b; font-style: italic; }
+
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .table-container { overflow-x: auto; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; table-layout: auto; min-width: 800px; } 
@@ -64,6 +70,7 @@
         .status-badge { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.15rem 0.4rem; border-radius: 9999px; font-size: 0.6rem; font-weight: 500; text-transform: capitalize; }
         .status-pending { background: #fef3c7; color: #92400e; } .status-proses { background: #dbeafe; color: #1e40af; } .status-selesai { background: #dcfce7; color: #166534; }
         .generated-number { font-family: 'Space Grotesk', monospace; font-size: 1rem; font-weight: 700; color: #166534; background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 0.75rem; text-align: center; letter-spacing: 0.03em; }
+        /* Stats Colors */
         .stat-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; position: relative; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
         .stat-blue::before { background: linear-gradient(90deg, #3b82f6, #2563eb); } .stat-purple::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); } .stat-green::before { background: linear-gradient(90deg, #22c55e, #16a34a); } .stat-orange::before { background: linear-gradient(90deg, #f97316, #ea580c); }
@@ -82,11 +89,13 @@
 </head>
 <body>
     <div class="bg-pattern"></div><div class="bg-grid"></div>
+    
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="p-4 border-b border-white/10">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 rounded flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-0.5"><img src="https://z-cdn-media.chatglm.cn/files/b8bffa74-ccd7-43df-ac0a-7d38232e3901.png?auth_key=1872868863-b6cd966dc51a4c34aa738032b487a895-0-e6beed34fb7fb9a9650976366f590c26" alt="Logo" class="w-full h-full object-contain"></div>
-                <div class="flex flex-col"><h1 class="font-display font-bold text-sm text-white">BPS Kota Pekanbaru</h1><span id="syncStatus" class="sync-badge sync-local">Local Storage</span></div>
+                <div class="flex flex-col"><h1 class="font-display font-bold text-sm text-white">Digitasi Penomoran</h1><span id="syncStatus" class="sync-badge sync-local">Local Storage</span></div>
             </div>
         </div>
         <nav class="flex-1 py-3 overflow-y-auto">
@@ -104,13 +113,13 @@
             <a href="#" class="nav-item" onclick="document.getElementById('importFile').click()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Import Data</a>
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
         </nav>
-         
+
         <!-- Footer Sidebar -->
         <div class="sidebar-footer">
             <p>@Copyright_Putu_BPS Kota Pekanbaru</p>
         </div>
     </aside>
-    
+
     <div class="mobile-header"><button onclick="toggleSidebar()" class="action-btn" aria-label="Menu"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button><span class="font-display font-bold ml-2 text-sm" id="mobileTitle">Dashboard</span></div>
     <main class="main-content"><div id="contentArea" class="animate-fade-up">Loading...</div></main>
     <div id="modal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
@@ -131,7 +140,7 @@
         const firebaseConfig = {}; // Kosongkan untuk mode Local Storage
         
         let db = null; let useFirestore = false;
-        const DB_KEY = 'digitasi_penomoran_data_v7'; // Versi 7
+        const DB_KEY = 'digitasi_penomoran_data_v6'; // Versi 6
 
         if (firebaseConfig && firebaseConfig.apiKey) { try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); useFirestore = true; document.getElementById('syncStatus').className = 'sync-badge sync-cloud'; document.getElementById('syncStatus').textContent = 'Cloud Sync'; } catch (e) { console.error("Firebase init error", e); } }
 
@@ -156,14 +165,9 @@
         const TIPE_FORM_OPTIONS = ["JLN", "Non Opr", "Bahan", "Persediaan", "Pemeliharaan", "Modal", "Sewa", "Jasa Konsultan", "Jasa Profesi", "Honor", "Fullday/Halfday", "Fullboard Dalam Kota", "Fullboard Luar Kota", "Translok", "Jasa Lainnya", "Perkantoran", "Paket Meeting Lainnya", "Operasional", "Belanja Langganan", "Lembur", "Penghasilan"];
         const SIFAT_ST_OPTIONS = ["B-Biasa", "P-Penting", "R-Rahasia"];
         const DISPOSISI_OPTIONS = ["0-Kepala Kantor", "1-Sub Bag Umum", "2-Fungsi Stat. Sosial", "3-Fungsi Stat. Produksi", "4-Fungsi Stat. Distribusi", "5-Fungsi NWAS", "6-Fungsi IPDS"];
-        
-        // Opsi Kontrak Kerja
         const SIFAT_KONTRAK_OPTIONS = ["Keuangan", "Kegiatan"];
         const RUANG_LINGKUP_OPTIONS = ["Internal", "Eksternal", "Internal dan Eksternal"];
-        
-        // Opsi Surat Keputusan (SK)
-        const SIFAT_SK_OPTIONS = ["Kepegawaian", "Administrasi"];
-        
+
         const menuConfig = {
             'dashboard': { title: 'Dashboard', prefix: '' },
             'surat-keluar': { title: 'Surat Keluar', prefix: 'B', isManual: false },
@@ -209,18 +213,18 @@
                 ${searchUI}${filterUI}<div class="card animate-fade-up stagger-1">${totalSectionHTML}<div class="table-container"><table class="data-table"><thead><tr>${renderTableHeaders()}</tr></thead><tbody id="tableBody"></tbody></table></div><div id="emptyState" class="p-6 text-center text-slate-400 hidden"><p>Tidak ada data</p></div><div id="paginationContainer" class="p-3 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-2"></div></div>`;
             renderTable(data);
         }
-        function renderDashboard(container) { const totalAll = Object.keys(state.data).reduce((acc, key) => { if (Array.isArray(state.data[key])) acc += state.data[key].length; return acc; }, 0); const totalBelanjaSelesai = state.data['permintaan-belanja'].filter(item => item.status === 'selesai').reduce((sum, item) => sum + (item.nilaiUsulan || 0), 0); const syncStatus = useFirestore ? '<span class="text-xs text-blue-600 font-semibold">(Cloud Sync)</span>' : '<span class="text-xs text-slate-500">(Mode Offline)</span>'; container.innerHTML = `<div class="mb-4"><h2 class="font-display text-xl font-bold text-slate-800">Monitoring Penomoran</h2><p class="text-slate-500 text-xs">Ringkasan data ${syncStatus}</p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-up"><div class="stat-card stat-green col-span-1 lg:col-span-2"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Total Realisasi Belanja</p><p class="font-display text-2xl font-bold text-slate-800">${formatCurrency(totalBelanjaSelesai)}</p></div><div class="w-10 h-10 rounded-lg stat-icon-green flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div></div></div><div class="stat-card stat-blue"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Total Dokumen</p><p class="font-display text-2xl font-bold">${totalAll}</p></div><div class="w-10 h-10 rounded-lg stat-icon-blue flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div></div></div><div class="stat-card stat-purple"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Surat Keluar</p><p class="font-display text-2xl font-bold">${state.data['surat-keluar'].length}</p></div><div class="w-10 h-10 rounded-lg stat-icon-purple flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></div></div></div></div><div class="card p-4 animate-fade-up stagger-1"><h3 class="font-display font-bold text-base mb-3">Akses Cepat</h3><div class="grid grid-cols-2 gap-2"><button onclick="switchMenu('surat-keluar', event)" class="btn-secondary text-left justify-start px-3 py-2 text-xs"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Surat Keluar</button><button onclick="switchMenu('surat-masuk', event)" class="btn-secondary text-left justify-start px-3 py-2 text-xs"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>Surat Masuk</button></div></div>`; }
+        function renderDashboard(container) { const totalAll = Object.keys(state.data).reduce((acc, key) => { if (Array.isArray(state.data[key])) acc += state.data[key].length; return acc; }, 0); const totalBelanjaSelesai = state.data['permintaan-belanja'].filter(item => item.status === 'selesai').reduce((sum, item) => sum + (item.nilaiUsulan || 0), 0); const syncStatus = useFirestore ? '<span class="text-xs text-blue-600 font-semibold">(Cloud Sync)</span>' : '<span class="text-xs text-slate-500">(Mode Offline)</span>'; container.innerHTML = `<div class="mb-4"><h2 class="font-display text-xl font-bold text-slate-800">Dashboard</h2><p class="text-slate-500 text-xs">Ringkasan data ${syncStatus}</p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-up"><div class="stat-card stat-green col-span-1 lg:col-span-2"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Total Realisasi Belanja</p><p class="font-display text-2xl font-bold text-slate-800">${formatCurrency(totalBelanjaSelesai)}</p></div><div class="w-10 h-10 rounded-lg stat-icon-green flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div></div></div><div class="stat-card stat-blue"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Total Dokumen</p><p class="font-display text-2xl font-bold">${totalAll}</p></div><div class="w-10 h-10 rounded-lg stat-icon-blue flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div></div></div><div class="stat-card stat-purple"><div class="flex justify-between items-start"><div><p class="text-slate-500 text-xs mb-1">Surat Keluar</p><p class="font-display text-2xl font-bold">${state.data['surat-keluar'].length}</p></div><div class="w-10 h-10 rounded-lg stat-icon-purple flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></div></div></div></div><div class="card p-4 animate-fade-up stagger-1"><h3 class="font-display font-bold text-base mb-3">Akses Cepat</h3><div class="grid grid-cols-2 gap-2"><button onclick="switchMenu('surat-keluar', event)" class="btn-secondary text-left justify-start px-3 py-2 text-xs"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Surat Keluar</button><button onclick="switchMenu('surat-masuk', event)" class="btn-secondary text-left justify-start px-3 py-2 text-xs"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>Surat Masuk</button></div></div>`; }
 
         function renderTableHeaders() {
             let headers = '';
             if (state.currentMenu === 'surat-masuk') { headers = '<th>Tgl Terima</th><th>No. Surat</th><th>Tgl Surat</th><th>Perihal</th><th>Pengirim</th><th>Disposisi</th><th>Tgl Disposisi</th><th>File</th>'; }
             else if (state.currentMenu === 'kontrak-kerja') { headers = '<th>No. Kontrak</th><th>Tanggal</th><th>Sifat</th><th>Nama Mitra</th><th>Ruang Lingkup</th><th>Dibuat Oleh</th><th>File</th>'; }
-            else if (state.currentMenu === 'sk') { headers = '<th>No. SK</th><th>Tanggal</th><th>Sifat</th><th>Perihal</th><th>Ruang Lingkup</th><th>Dibuat Oleh</th><th>File</th>'; }
             else {
                 headers = '<th>No. Surat</th><th>Tanggal</th>';
                 if (state.currentMenu === 'surat-keluar') headers += '<th>Perihal</th><th>Tujuan</th>';
                 else if (state.currentMenu === 'permintaan-belanja') headers += '<th>Uraian</th><th>Tipe Form</th><th>Pembuat</th><th>Nilai</th>';
                 else if (state.currentMenu === 'surat-tugas') headers += '<th class="w-2/5">Perihal</th><th>Pengguna</th><th>File</th>';
+                else if (state.currentMenu === 'sk') headers += '<th>Perihal</th><th>Tentang</th>';
             }
             headers += '<th>Status</th><th class="text-center">Aksi</th>'; return headers;
         }
@@ -250,13 +254,12 @@
                     cols = `<td>${formatDate(item.tanggalTerima)}</td><td><span class="number-badge">${item.nomorSurat || '-'}</span></td><td>${formatDate(item.tanggalSurat)}</td><td class="truncate max-w-[150px]">${item.perihal}</td><td class="truncate max-w-[100px]">${item.pengirim || '-'}</td><td><span class="px-1.5 py-0.5 text-[10px] rounded bg-blue-50 text-blue-700 border border-blue-100">${item.disposisi || '-'}</span></td><td>${item.tanggalDisposisi ? formatDate(item.tanggalDisposisi) : '-'}</td><td>${item.fileName ? `<span class="text-blue-600 text-[10px] underline cursor-pointer">${item.fileName}</span>` : '-'}</td>`;
                 } else if (state.currentMenu === 'kontrak-kerja') {
                     cols = `<td><span class="number-badge">${item.nomorSurat}</span></td><td>${formatDate(item.tanggal)}</td><td><span class="px-1.5 py-0.5 text-[10px] rounded bg-slate-100 text-slate-700 border border-slate-200">${item.sifatSurat || '-'}</span></td><td>${item.namaMitra || '-'}</td><td>${item.ruangLingkup || '-'}</td><td class="truncate max-w-[120px]">${item.dibuatOleh || '-'}</td><td>${item.fileName ? `<span class="text-blue-600 text-[10px] underline cursor-pointer">${item.fileName}</span>` : '-'}</td>`;
-                } else if (state.currentMenu === 'sk') {
-                    cols = `<td><span class="number-badge">${item.nomorSurat}</span></td><td>${formatDate(item.tanggal)}</td><td><span class="px-1.5 py-0.5 text-[10px] rounded bg-teal-50 text-teal-700 border border-teal-200">${item.sifatSurat || '-'}</span></td><td class="truncate max-w-[150px]">${item.perihal || '-'}</td><td>${item.ruangLingkup || '-'}</td><td class="truncate max-w-[120px]">${item.dibuatOleh || '-'}</td><td>${item.fileName ? `<span class="text-blue-600 text-[10px] underline cursor-pointer">${item.fileName}</span>` : '-'}</td>`;
                 } else {
                     cols = `<td><span class="number-badge">${item.nomorSurat}</span></td><td>${formatDate(item.tanggal)}</td>`;
                     if (state.currentMenu === 'surat-keluar') cols += `<td class="truncate max-w-[150px]">${item.perihal}</td><td class="truncate max-w-[100px]">${item.tujuan || '-'}</td>`;
                     else if (state.currentMenu === 'permintaan-belanja') cols += `<td class="">${item.uraian}</td><td>${item.tipeForm || '-'}</td><td>${item.dibuatOleh || '-'}</td><td class="text-right font-display">${item.nilaiUsulan ? formatCurrency(item.nilaiUsulan) : '-'}</td>`;
                     else if (state.currentMenu === 'surat-tugas') cols += `<td class="truncate max-w-[300px] font-medium text-slate-700">${item.perihal}</td><td class="whitespace-nowrap text-slate-600">${item.namaPengguna || '-'}</td><td>${item.fileName ? `<span class="text-blue-600 text-[10px] underline cursor-pointer">${item.fileName}</span>` : '-'}</td>`;
+                    else if (state.currentMenu === 'sk') cols += `<td class="truncate max-w-[150px]">${item.perihal}</td><td class="truncate max-w-[100px]">${item.tentang || '-'}</td>`;
                 }
                 let statusBadge = ''; if (state.currentMenu === 'permintaan-belanja') { const statusClass = item.status === 'selesai' ? 'status-selesai' : (item.status === 'proses' ? 'status-proses' : 'status-pending'); statusBadge = `<span class="status-badge ${statusClass}">${item.status}</span>`; } else statusBadge = `<span class="status-badge ${item.status === 'sent' ? 'status-selesai' : 'status-pending'}">${item.status === 'sent' ? 'Selesai' : 'Pending'}</span>`;
                 cols += `<td>${statusBadge}</td><td><div class="flex gap-0.5 justify-center"><button onclick="openModal(${item.id})" class="action-btn warning" title="Edit"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button><button onclick="toggleStatus(${item.id})" class="action-btn" title="Ubah Status"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button><button onclick="deleteItem(${item.id})" class="action-btn danger" title="Hapus"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></td>`;
@@ -331,29 +334,6 @@
                     <div><label class="form-label">Dibuat Oleh <span class="text-red-500">*</span></label><select id="field_dibuatOleh" class="form-select" required><option value="" disabled selected>Pilih Nama...</option>${STAFF_LIST.map(name => `<option value="${name}" ${itemData?.dibuatOleh === name ? 'selected' : ''}>${name}</option>`).join('')}</select></div>
                     <div><label class="form-label">Upload File</label><input type="file" id="field_file" class="form-input file-input" accept=".pdf,.doc,.docx,.xls,.xlsx">${itemData?.fileName ? `<p class="text-xs mt-1 text-blue-600">File: ${itemData.fileName}</p>` : ''}</div>
                 `;
-            } else if (state.currentMenu === 'sk') {
-                // Form Surat Keputusan
-                html += `
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="form-label">Tanggal <span class="text-red-500">*</span></label><input type="date" id="field_tanggal" class="form-input" value="${itemData?.tanggal || ''}" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}></div>
-                        <div>
-                            <label class="form-label">Sifat Surat <span class="text-red-500">*</span></label>
-                            <select id="field_sifatSurat" class="form-select" required>
-                                ${SIFAT_SK_OPTIONS.map(opt => `<option value="${opt}" ${itemData?.sifatSurat === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                            </select>
-                        </div>
-                    </div>
-                    <div><label class="form-label">Perihal <span class="text-red-500">*</span></label><input type="text" id="field_perihal" class="form-input" value="${itemData?.perihal || ''}" required></div>
-                    <div>
-                        <label class="form-label">Ruang Lingkup <span class="text-red-500">*</span></label>
-                        <select id="field_ruangLingkup" class="form-select" required>
-                            <option value="" disabled selected>Pilih...</option>
-                            ${RUANG_LINGKUP_OPTIONS.map(opt => `<option value="${opt}" ${itemData?.ruangLingkup === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div><label class="form-label">Dibuat Oleh <span class="text-red-500">*</span></label><select id="field_dibuatOleh" class="form-select" required><option value="" disabled selected>Pilih Nama...</option>${STAFF_LIST.map(name => `<option value="${name}" ${itemData?.dibuatOleh === name ? 'selected' : ''}>${name}</option>`).join('')}</select></div>
-                    <div><label class="form-label">Upload File</label><input type="file" id="field_file" class="form-input file-input" accept=".pdf,.doc,.docx,.xls,.xlsx">${itemData?.fileName ? `<p class="text-xs mt-1 text-blue-600">File: ${itemData.fileName}</p>` : ''}</div>
-                `;
             } else if (state.currentMenu === 'surat-tugas') {
                  html += `<div class="grid grid-cols-2 gap-2"><div><label class="form-label">Sifat <span class="text-red-500">*</span></label><select id="field_sifat" class="form-select" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}>${SIFAT_ST_OPTIONS.map(opt => { const val = opt.split('-')[0]; return `<option value="${val}" ${itemData?.sifat === val ? 'selected' : ''}>${opt}</option>`; }).join('')}</select>${isEdit ? '<input type="hidden" id="field_sifat_hidden" value="'+itemData?.sifat+'">' : ''}</div><div><label class="form-label">Tanggal <span class="text-red-500">*</span></label><input type="date" id="field_tanggal" class="form-input" value="${itemData?.tanggal || ''}" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}></div></div><div><label class="form-label">Perihal <span class="text-red-500">*</span></label><input type="text" id="field_perihal" class="form-input" value="${itemData?.perihal || ''}" required></div><div class="grid grid-cols-2 gap-2"><div><label class="form-label">Kode Klasifikasi <span class="text-red-500">*</span></label><input type="text" id="field_klasifikasi" class="form-input" value="${itemData?.klasifikasi || ''}" placeholder="Contoh: KP.650" oninput="updatePreview()" required></div><div><label class="form-label">Nama Pengguna <span class="text-red-500">*</span></label><input type="text" id="field_namaPengguna" class="form-input" value="${itemData?.namaPengguna || ''}" placeholder="Masukkan nama lengkap" required></div></div><div><label class="form-label">Upload File <span class="text-slate-400">(Opsional)</span></label><input type="file" id="field_file" class="form-input file-input" accept=".pdf,.doc,.docx,.xls,.xlsx">${itemData?.fileName ? `<p class="text-xs mt-1 text-blue-600">File: ${itemData.fileName}</p>` : ''}</div>`;
             } else if (state.currentMenu === 'permintaan-belanja') {
@@ -362,6 +342,9 @@
                     <div><label class="form-label">Nilai Usulan (Rp) <span class="text-red-500">*</span></label><input type="number" id="field_nilaiUsulan" class="form-input" placeholder="0" value="${itemData?.nilaiUsulan || ''}" required></div>`;
             } else if (state.currentMenu === 'surat-keluar') {
                 html += `<div class="grid grid-cols-2 gap-2"><div><label class="form-label">Jenis Surat <span class="text-red-500">*</span></label><select id="jenisSurat" class="form-select" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}><option value="B" ${itemData?.nomorSurat?.startsWith('B') ? 'selected' : ''}>B - Biasa</option><option value="S" ${itemData?.nomorSurat?.startsWith('S') ? 'selected' : ''}>S - Segera</option><option value="R" ${itemData?.nomorSurat?.startsWith('R') ? 'selected' : ''}>R - Rahasia</option><option value="U" ${itemData?.nomorSurat?.startsWith('U') ? 'selected' : ''}>U - Urgent</option></select></div><div><label class="form-label">Penanda Tangan <span class="text-red-500">*</span></label><select id="penandaTangan" class="form-select" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}><option value="" disabled selected>Pilih</option><option value="14.710" ${itemData?.penandaTangan === '14.710' ? 'selected' : ''}>14.710 - Kepala Kantor</option><option value="14.711" ${itemData?.penandaTangan === '14.711' ? 'selected' : ''}>14.711 - Sub Bagian Umum</option></select></div></div><div><label class="form-label">Kode Klasifikasi <span class="text-red-500">*</span></label><input type="text" id="klasifikasi" class="form-input" placeholder="Contoh: 14.710" value="${itemData?.klasifikasi || ''}" oninput="updatePreview()" required ${isEdit ? 'disabled' : ''}></div><div><label class="form-label">Tanggal <span class="text-red-500">*</span></label><input type="date" id="field_tanggal" class="form-input" value="${itemData?.tanggal || ''}" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}></div><div><label class="form-label">Perihal <span class="text-red-500">*</span></label><input type="text" id="field_perihal" class="form-input" value="${itemData?.perihal || ''}" required></div><div><label class="form-label">Tujuan <span class="text-red-500">*</span></label><input type="text" id="field_tujuan" class="form-input" value="${itemData?.tujuan || ''}" required></div>`;
+            } else {
+                 html += `<div><label class="form-label">Tanggal <span class="text-red-500">*</span></label><input type="date" id="field_tanggal" class="form-input" value="${itemData?.tanggal || ''}" onchange="updatePreview()" required ${isEdit ? 'disabled' : ''}></div><div><label class="form-label">Perihal <span class="text-red-500">*</span></label><input type="text" id="field_perihal" class="form-input" value="${itemData?.perihal || ''}" required></div>`;
+                 if (state.currentMenu === 'sk') html += `<div><label class="form-label">Tentang <span class="text-red-500">*</span></label><input type="text" id="field_tentang" class="form-input" value="${itemData?.tentang || ''}" required></div>`;
             }
             html += `<div class="flex gap-2 pt-3"><button type="button" onclick="closeModal()" class="btn-secondary flex-1">Batal</button><button type="submit" class="btn-primary flex-1">Simpan</button></div>`;
             return html;
@@ -370,21 +353,7 @@
         function updatePreview() {
             if (state.currentMenu === 'surat-masuk') return; const tanggal = document.getElementById('field_tanggal')?.value; if (!tanggal) return; const el = document.getElementById('generatedNumber'); if (!el) return;
             
-            if (state.currentMenu === 'sk') {
-                const date = new Date(tanggal);
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const year = date.getFullYear();
-                
-                // Hitung urutan di tanggal yg sama
-                const sameDayItems = state.data['sk'].filter(item => item.tanggal === tanggal);
-                let maxSeq = sameDayItems.length > 0 ? Math.max(...sameDayItems.map(i => i.nomorUrut || 0)) : 0;
-                const seq = String(maxSeq + 1).padStart(3, '0');
-                
-                // Format: MMDDXXX TAHUN YYYY
-                el.textContent = `${month}${day}${seq} TAHUN ${year}`;
-            }
-            else if (state.currentMenu === 'kontrak-kerja') {
+            if (state.currentMenu === 'kontrak-kerja') {
                 const date = new Date(tanggal);
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
@@ -403,11 +372,18 @@
             e.preventDefault(); const config = menuConfig[state.currentMenu];
             if (state.editingId) { const itemIndex = state.data[state.currentMenu].findIndex(d => d.id === state.editingId); if (itemIndex !== -1) { const item = state.data[state.currentMenu][itemIndex];
                 if (state.currentMenu === 'surat-masuk') { item.tanggalTerima = document.getElementById('field_tanggalTerima').value; item.tanggalSurat = document.getElementById('field_tanggalSurat').value; item.nomorSurat = document.getElementById('field_nomorSurat').value; item.perihal = document.getElementById('field_perihal').value; item.pengirim = document.getElementById('field_pengirim').value; item.disposisi = document.getElementById('field_disposisi').value; item.tanggalDisposisi = document.getElementById('field_tanggalDisposisi').value; const fileInput = document.getElementById('field_file'); if (fileInput && fileInput.files[0]) item.fileName = fileInput.files[0].name; item.tanggal = item.tanggalTerima; }
-                else if (state.currentMenu === 'kontrak-kerja') { item.tanggal = document.getElementById('field_tanggal').value; item.sifatSurat = document.getElementById('field_sifatSurat').value; item.namaMitra = document.getElementById('field_namaMitra').value; item.ruangLingkup = document.getElementById('field_ruangLingkup').value; item.dibuatOleh = document.getElementById('field_dibuatOleh').value; const fileInput = document.getElementById('field_file'); if (fileInput && fileInput.files[0]) item.fileName = fileInput.files[0].name; }
-                else if (state.currentMenu === 'sk') { item.tanggal = document.getElementById('field_tanggal').value; item.sifatSurat = document.getElementById('field_sifatSurat').value; item.perihal = document.getElementById('field_perihal').value; item.ruangLingkup = document.getElementById('field_ruangLingkup').value; item.dibuatOleh = document.getElementById('field_dibuatOleh').value; const fileInput = document.getElementById('field_file'); if (fileInput && fileInput.files[0]) item.fileName = fileInput.files[0].name; }
+                else if (state.currentMenu === 'kontrak-kerja') {
+                    item.tanggal = document.getElementById('field_tanggal').value;
+                    item.sifatSurat = document.getElementById('field_sifatSurat').value;
+                    item.namaMitra = document.getElementById('field_namaMitra').value;
+                    item.ruangLingkup = document.getElementById('field_ruangLingkup').value;
+                    item.dibuatOleh = document.getElementById('field_dibuatOleh').value;
+                    const fileInput = document.getElementById('field_file'); if (fileInput && fileInput.files[0]) item.fileName = fileInput.files[0].name;
+                }
                 else if (state.currentMenu === 'surat-tugas') { item.perihal = document.getElementById('field_perihal').value; item.klasifikasi = document.getElementById('field_klasifikasi').value; item.namaPengguna = document.getElementById('field_namaPengguna').value; const fileInput = document.getElementById('field_file'); if (fileInput && fileInput.files[0]) item.fileName = fileInput.files[0].name; }
                 else if (state.currentMenu === 'permintaan-belanja') { item.uraian = document.getElementById('field_uraian').value; item.tipeForm = document.getElementById('field_tipeForm').value; item.dibuatOleh = document.getElementById('field_dibuatOleh').value; item.nilaiUsulan = parseFloat(document.getElementById('field_nilaiUsulan').value); }
                 else if (state.currentMenu === 'surat-keluar') { item.perihal = document.getElementById('field_perihal').value; item.tujuan = document.getElementById('field_tujuan').value; }
+                else { item.perihal = document.getElementById('field_perihal').value; if (state.currentMenu === 'sk') item.tentang = document.getElementById('field_tentang').value; }
             } closeModal(); await saveData(); renderContent(); showToast('Data berhasil diperbarui'); return; }
             let newItem = { id: Date.now(), status: 'pending' };
 
@@ -422,9 +398,11 @@
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 const year = date.getFullYear();
+                
                 const sameDayItems = state.data['kontrak-kerja'].filter(item => item.tanggal === tanggal);
                 let maxSeq = sameDayItems.length > 0 ? Math.max(...sameDayItems.map(i => i.nomorUrut || 0)) : 0;
                 const seq = String(maxSeq + 1).padStart(3, '0');
+
                 newItem.tanggal = tanggal;
                 newItem.nomorSurat = `${month}${day}${seq}/PPK/SPKM/${year}`;
                 newItem.nomorUrut = maxSeq + 1;
@@ -435,33 +413,12 @@
                 const fileInput = document.getElementById('field_file');
                 newItem.fileName = fileInput && fileInput.files[0] ? fileInput.files[0].name : '';
             }
-            else if (state.currentMenu === 'sk') {
-                const tanggal = document.getElementById('field_tanggal').value;
-                const date = new Date(tanggal);
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const year = date.getFullYear();
-                
-                const sameDayItems = state.data['sk'].filter(item => item.tanggal === tanggal);
-                let maxSeq = sameDayItems.length > 0 ? Math.max(...sameDayItems.map(i => i.nomorUrut || 0)) : 0;
-                const seq = String(maxSeq + 1).padStart(3, '0');
-                
-                // Format: MMDDXXX TAHUN YYYY
-                newItem.tanggal = tanggal;
-                newItem.nomorSurat = `${month}${day}${seq} TAHUN ${year}`;
-                newItem.nomorUrut = maxSeq + 1;
-                newItem.sifatSurat = document.getElementById('field_sifatSurat').value;
-                newItem.perihal = document.getElementById('field_perihal').value;
-                newItem.ruangLingkup = document.getElementById('field_ruangLingkup').value;
-                newItem.dibuatOleh = document.getElementById('field_dibuatOleh').value;
-                const fileInput = document.getElementById('field_file');
-                newItem.fileName = fileInput && fileInput.files[0] ? fileInput.files[0].name : '';
-            }
             else {
                 const tanggalInput = document.getElementById('field_tanggal'); const tanggal = tanggalInput ? tanggalInput.value : new Date().toISOString().split('T')[0]; newItem.tanggal = tanggal;
                 if (state.currentMenu === 'surat-tugas') { const sifat = document.getElementById('field_sifat').value; const klasifikasi = document.getElementById('field_klasifikasi').value; const date = new Date(tanggal); const month = String(date.getMonth() + 1).padStart(2, '0'); const day = String(date.getDate()).padStart(2, '0'); const year = date.getFullYear(); const allSameDay = state.data['surat-tugas'].filter(item => item.tanggal === tanggal); let maxSeq = allSameDay.length > 0 ? Math.max(...allSameDay.map(i => i.nomorUrut || 0)) : 0; const seqPadded = String(maxSeq + 1).padStart(3, '0'); newItem.nomorSurat = `${sifat}-${month}${day}${seqPadded}/428088/${klasifikasi}/${year}`; newItem.nomorUrut = maxSeq + 1; newItem.sifat = sifat; newItem.perihal = document.getElementById('field_perihal').value; newItem.klasifikasi = klasifikasi; newItem.namaPengguna = document.getElementById('field_namaPengguna').value; const fileInput = document.getElementById('field_file'); newItem.fileName = fileInput && fileInput.files[0] ? fileInput.files[0].name : ''; }
                 else if (state.currentMenu === 'permintaan-belanja') { const sifatEl = document.getElementById('field_sifat'); const sifat = sifatEl ? sifatEl.value : 'B'; const date = new Date(tanggal); const day = String(date.getDate()).padStart(2, '0'); const month = date.getMonth() + 1; const year = date.getFullYear(); const allSameDay = state.data['permintaan-belanja'].filter(item => item.tanggal === tanggal); let maxSeq = allSameDay.length > 0 ? Math.max(...allSameDay.map(i => i.nomorUrut || 0)) : 0; newItem.nomorSurat = `${sifat}-${day}${String(maxSeq + 1).padStart(3, '0')}/428088/KU.300/${month}/${year}`; newItem.nomorUrut = maxSeq + 1; newItem.sifat = sifat; newItem.tipeForm = document.getElementById('field_tipeForm')?.value || ''; newItem.uraian = document.getElementById('field_uraian')?.value || ''; newItem.dibuatOleh = document.getElementById('field_dibuatOleh')?.value || ''; newItem.nilaiUsulan = parseFloat(document.getElementById('field_nilaiUsulan')?.value || 0); }
                 else if (state.currentMenu === 'surat-keluar') { const penandaTangan = document.getElementById('penandaTangan')?.value || '14.710'; const klasifikasi = document.getElementById('klasifikasi')?.value || '14.710'; const date = new Date(tanggal); const month = String(date.getMonth() + 1).padStart(2, '0'); const day = String(date.getDate()).padStart(2, '0'); const sameDayItems = state.data[state.currentMenu].filter(item => item.tanggal === tanggal); let maxSeq = sameDayItems.length > 0 ? Math.max(...sameDayItems.map(i => i.nomorUrut || 0)) : 0; const prefix = document.getElementById('jenisSurat')?.value || 'B'; newItem.nomorSurat = `${prefix}-${month}${day}${String(maxSeq + 1).padStart(3, '0')}/${penandaTangan}/${klasifikasi}/${date.getFullYear()}`; newItem.nomorUrut = maxSeq + 1; newItem.perihal = document.getElementById('field_perihal')?.value || ''; newItem.tujuan = document.getElementById('field_tujuan')?.value || ''; newItem.penandaTangan = penandaTangan; newItem.klasifikasi = klasifikasi; }
+                else { const date = new Date(tanggal); const month = String(date.getMonth() + 1).padStart(2, '0'); const day = String(date.getDate()).padStart(2, '0'); const sameDayItems = state.data[state.currentMenu].filter(item => item.tanggal === tanggal); let maxSeq = sameDayItems.length > 0 ? Math.max(...sameDayItems.map(i => i.nomorUrut || 0)) : 0; const prefix = config.prefix; newItem.nomorSurat = `${prefix}-${month}${day}${String(maxSeq + 1).padStart(3, '0')}`; newItem.nomorUrut = maxSeq + 1; newItem.perihal = document.getElementById('field_perihal')?.value || ''; if (state.currentMenu === 'sk') newItem.tentang = document.getElementById('field_tentang')?.value || ''; }
             }
             state.data[state.currentMenu].push(newItem); await saveData(); closeModal(); renderContent(); showToast('Data berhasil disimpan'); return false;
         }
